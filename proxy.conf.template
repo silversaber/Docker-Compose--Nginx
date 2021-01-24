@@ -1,0 +1,298 @@
+map $http_upgrade $connection_upgrade {
+	default upgrade;
+	''	close;
+}
+
+upstream docker-transmission {
+    server transmission:9091;
+}
+
+upstream docker-jdownloader-2 {
+    server jdownloader2:5800;
+}
+
+upstream docker-netdata {
+    server netdata:19999;
+    keepalive 64;
+}
+
+upstream docker-airsonic {
+    server airsonic:4040;
+    keepalive 100;
+}
+
+upstream docker-photoshow {
+    server photoshow:80;
+}
+
+server {
+    listen 80;
+ 
+    server_name ${PrimaryDomain} ${SubDomain} home.${SubDomain};
+    
+    location ^~ /.well-known/acme-challenge/ {
+        alias /var/www/certbot/;
+	default_type "text/plain";
+        autoindex on;
+        dav_access all:r;
+	break;
+    }
+
+    location / {
+        rewrite ^ https://$host$request_uri? permanent;
+	break;
+    }
+}
+
+server {
+    server_name code.${SubDomain} code.${PrimaryDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass         http://${PrimaryDomain}:8080;
+	    proxy_http_version      1.1;
+    	proxy_set_header       Upgrade $http_upgrade;
+    	proxy_set_header       Connection "upgrade";
+	break;
+    }
+}
+
+server {
+    server_name genshin.${PrimaryDomain};
+    charset utf-8;
+   
+    root /usr/share/nginx/html/static/genshin-map/Yuanshenditu/;
+       
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+}
+
+server {
+    server_name genshin.${SubDomain};
+    charset utf-8;
+    
+    listen 80;
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+        rewrite ^ https://genshin.${PrimaryDomain}$request_uri? permanent;
+	break;
+    }
+}
+
+server {
+    server_name tomcat.${PrimaryDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass         http://${PrimaryDomain}:1205;
+	proxy_http_version      1.1;
+    	proxy_set_header       Upgrade $http_upgrade;
+    	proxy_set_header       Connection "upgrade";
+	break;
+    }
+}
+
+server {
+    charset utf-8;
+    server_name ${PrimaryDomain} ${SubDomain} home.${SubDomain};
+
+    root /usr/share/nginx/html;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location /.well-known/acme-challenge/ {
+    	alias /var/www/certbot/;
+	default_type "text/plain";
+	autoindex on;
+        dav_access all:r;
+	break;
+    }
+    
+    location / {
+        index index.html;
+        error_page 404 /404.html;
+	break;
+    }
+    location /img/ {
+        autoindex on;
+	break;
+    }
+    
+    location /transmission {
+        proxy_pass         http://docker-transmission;
+        proxy_redirect     off;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Host $server_name;
+	break;
+    }
+
+
+    location = /photoshow {
+        return 301 /photoshow/;
+	break;
+    }
+
+    location ~/photoshow/(?<ndpath>.*) {
+        auth_basic "restricted";
+        auth_basic_user_file /etc/nginx/user.htpasswd;
+
+        proxy_pass http://docker-photoshow/$ndpath$is_args$args;
+        proxy_redirect     off;
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Host  $http_host;
+        proxy_set_header Host              $http_host;
+	break;
+    }
+
+    location /airsonic {
+        proxy_pass         http://docker-airsonic/airsonic;
+        proxy_redirect                     http:// https://;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Host  $http_host;
+        proxy_set_header Host              $http_host;
+        proxy_max_temp_file_size           0;
+
+        proxy_buffers 64 16k;
+
+        proxy_buffer_size 64k;
+	break;
+    }    
+
+    location = /netdata {
+        return 301 /netdata/;
+	break;
+    }
+
+    location ~ /netdata/(?<ndpath>.*) {
+        auth_basic "restricted";
+        auth_basic_user_file /etc/nginx/user.htpasswd;
+
+	proxy_redirect off;
+	proxy_set_header Host $host;
+
+	proxy_set_header X-Forwarded-Host $host;
+	proxy_set_header X-Forwarded-Server $host;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_http_version 1.1;
+	proxy_pass_request_headers on;
+	proxy_set_header Connection "keep-alive";
+	proxy_store off;
+	proxy_pass http://docker-netdata/$ndpath$is_args$args;
+
+	gzip on;
+	gzip_proxied any;
+	gzip_types *;
+	break;
+     }
+
+    location /code-server {
+        return 301 http://code.${SubDomain}/;
+    }
+    
+    location ^~ /jenkins/ {
+	proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
+	proxy_redirect http:// https://;
+	sendfile off;
+
+	proxy_set_header   Host             $host;
+	proxy_set_header   X-Real-IP        $remote_addr;
+	proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+	proxy_max_temp_file_size 0;
+
+	client_max_body_size       10m;
+	client_body_buffer_size    128k;
+
+	proxy_connect_timeout      90;
+	proxy_send_timeout         90;
+	proxy_read_timeout         90;
+
+	proxy_temp_file_write_size 64k;
+
+	proxy_http_version 1.1;
+	proxy_request_buffering off;
+	proxy_buffering off;
+	break;
+    }
+
+    location /jdownloader2/ {
+        proxy_pass http://docker-jdownloader-2/;
+	break;
+    }
+
+    location /jdownloader2/websockify {
+    	proxy_pass http://docker-jdownloader-2/websockify/;
+	proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+	proxy_read_timeout 86400;
+	break;
+    }
+
+    location /hello {
+        alias /var/webdav/file;
+       
+        autoindex     on;
+        create_full_put_path  on;
+        
+        dav_methods     PUT DELETE MKCOL COPY MOVE;
+        dav_ext_methods   PROPFIND OPTIONS;
+        
+        auth_basic "restricted";
+        auth_basic_user_file /etc/nginx/user.htpasswd;
+        dav_access    user:rw group:rw;
+
+        client_body_temp_path /var/webdav/client_temp;
+        client_max_body_size 0;
+        
+        send_timeout  36000s;
+        proxy_connect_timeout  36000s;
+        proxy_read_timeout  36000s;
+        proxy_send_timeout  36000s;
+        proxy_request_buffering off;
+	break;
+    }
+
+    location /share {
+        alias /var/webdav/file/share;
+        autoindex on;
+        dav_access all:r;
+	break;
+    }
+    
+    location /static {
+    	add_header 'Access-Control-Allow-Origin' '*';
+    	autoindex on;
+        dav_access all:r;
+	break;
+    }
+ }

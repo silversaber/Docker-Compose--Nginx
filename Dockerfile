@@ -1,6 +1,5 @@
 # nginx/Dockerfile
 FROM ubuntu:18.04
-MAINTAINER aglide100@gmail.com
 
 # install nginx & http ext module
 RUN apt-get update && apt-get install -y nginx-extras libnginx-mod-http-dav-ext git
@@ -15,14 +14,13 @@ RUN chmod -R 777 /var/webdav
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# 80/443포트로 접속시 나오는 index.html. 다른 서비스를 넣을꺼면 삭제 요망
+# nginx의 index.html. 현재 nginx에서 프록시 패스를 해주는 서비스들 링크가 있음
 COPY docs/ /usr/share/nginx/
 RUN chmod -R 755 /usr/share/nginx/html/img
 
 RUN  mkdir -p /etc/nginx/conf.d
 
-RUN mkdir -p /etc/nginx/sites-available
-RUN mkdir -p /etc/nginx/sites-enabled
+RUN mkdir -p /etc/nginx/sites-available && mkdir -p /etc/nginx/sites-enabled
 
 COPY proxy.conf.template .
 COPY /docs/html/index.html.template .

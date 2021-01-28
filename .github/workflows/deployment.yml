@@ -1,10 +1,10 @@
-name: ci
+name: deployment
 
 on:
   push:
     branches: master
 
-jobs:
+dockerImageBuild:
   main:
     runs-on: ubuntu-latest
     steps:
@@ -33,3 +33,23 @@ jobs:
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+Deploy:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    
+    steps:    
+    - uses: actions/checkout@v2
+    - name: executing remote ssh commands using password
+      if: github.event_name == 'pull_request'
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.Deploy_Server_HOST }}
+        username: ${{ secrets.Deploy_Server_USERNAME }}
+        password: ${{ secrets.Deploy_Server_PASSWORD }}
+        port: ${{ secrets.PORT }} # default : 22
+        passphrase: ${{ secrets.Deploy_Ssh_PASSPHRASE }}
+        script: |
+          cd ${{ secrets.Deploy_Server_PATH }} && git pull
+          sh dc.sh

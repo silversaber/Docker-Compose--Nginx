@@ -18,6 +18,9 @@ Used by loadbalance for own server, provide index.html for link to other pages
 ### Jenkins
 - https://github.com/silversaber/Docker-Compose--Jenkins
 
+### Redis
+- https://github.com/silversaber/Docker-Compose--Redis
+
 ----
 ## 3. Receive environment
     

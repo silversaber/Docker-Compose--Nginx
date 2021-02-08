@@ -90,7 +90,7 @@
             {
                 name: "Jenkins",
                 text: "프로젝트 배포툴",
-                url: "https://" + host + "/jenkins",
+                url: "https://jenkins." + host,
                 img: "img/icon_jenkins.svg"
             },
             {

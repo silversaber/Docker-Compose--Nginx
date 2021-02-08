@@ -21,6 +21,10 @@ upstream docker-airsonic {
     keepalive 100;
 }
 
+upstream docker-jenkins {
+    server jenkins:1203;
+}
+
 upstream docker-photoshow {
     server photoshow:80;
 }
@@ -94,7 +98,7 @@ server {
 }
 
 server {
-    server_name tomcat.${PrimaryDomain};
+    server_name tomcat.${PrimaryDomain} tomcat.${SubDomain};
     charset utf-8;
     
     listen 443 ssl;
@@ -105,6 +109,25 @@ server {
     
     location / {
     	proxy_pass         http://${PrimaryDomain}:1205;
+	proxy_http_version      1.1;
+    	proxy_set_header       Upgrade $http_upgrade;
+    	proxy_set_header       Connection "upgrade";
+	break;
+    }
+}
+
+server {
+    server_name jenkins.${PrimaryDomain} jenkins.${SubDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass         http://${PrimaryDomain}:1203;
 	proxy_http_version      1.1;
     	proxy_set_header       Upgrade $http_upgrade;
     	proxy_set_header       Connection "upgrade";

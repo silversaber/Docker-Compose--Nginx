@@ -204,7 +204,6 @@ server {
 	break;
     }
 
-
     location = /photoshow {
         return 301 /photoshow/;
 	break;

@@ -122,6 +122,12 @@
                 text: "원신맵",
                 url: "https://genshin." + host,
                 img: "img/icon_genshin.png"
+            },
+            {
+                name: "Next Cloud",
+                text: "nextcloud",
+                url: "https://" + host + "/nextcloud",
+                img: "img/icon_nextcloud.png"
             }
         ];
 

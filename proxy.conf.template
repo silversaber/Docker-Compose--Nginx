@@ -29,6 +29,10 @@ upstream docker-photoshow {
     server photoshow:80;
 }
 
+upstream docker-nextcloud {
+    server nextcloud:21111;
+}
+
 server {
     listen 80;
  
@@ -184,6 +188,21 @@ server {
 	break;
     }
 
+    location = /nextcloud {
+        return 301 /nextcloud/;
+    break;
+    }
+
+    location ~/nextcloud/(?<ndpath>.*) {
+        proxy_pass http://docker-nextcloud/$ndpath$is_args$args;
+        proxy_redirect     off;
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Host  $http_host;
+        proxy_set_header Host              $http_host;
+	break;
+    }
 
     location = /photoshow {
         return 301 /photoshow/;

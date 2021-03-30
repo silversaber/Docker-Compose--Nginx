@@ -30,7 +30,7 @@ upstream docker-photoshow {
 }
 
 upstream docker-nextcloud {
-    server nextcloud:80;
+    server nextcloud:443;
 }
 
 server {

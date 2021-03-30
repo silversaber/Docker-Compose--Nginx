@@ -126,7 +126,7 @@
             {
                 name: "Next Cloud",
                 text: "nextcloud",
-                url: "https://" + host + "/nextcloud",
+                url: "https://nextcloud." + host + "/nextcloud",
                 img: "img/icon_nextcloud.png"
             }
         ];

@@ -82,8 +82,9 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
     
     location / {
-    	proxy_pass http://${PrimaryDomain}:21111$ndpath$is_args$args;
-        proxy_redirect http:// https://;
+    	proxy_pass https://docker-nextcloud$ndpath$is_args$args;
+        proxy_ssl_certificate     /etc/nginx/client.pem;
+    	proxy_ssl_certificate_key /etc/nginx/client.key;
 	break;
     }
 }

@@ -83,8 +83,8 @@ server {
     
     location / {
     	proxy_pass https://docker-nextcloud$ndpath$is_args$args;
-        proxy_ssl_certificate     /etc/nginx/client.pem;
-    	proxy_ssl_certificate_key /etc/nginx/client.key;
+        proxy_ssl_certificate     /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    	proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
 	break;
     }
 }

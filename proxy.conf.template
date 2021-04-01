@@ -82,7 +82,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
     
     location = /nextcloud {
-    	return 301. /nextcloud/;
+    	return 301 /nextcloud/;
 	break;
     }
     

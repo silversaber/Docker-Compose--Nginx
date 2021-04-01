@@ -81,7 +81,12 @@ server {
     ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
     
-    location / {
+    location = /nextcloud {
+    	return 301. /nextcloud/;
+	break;
+    }
+    
+    location ~/nextcloud/(?<ndpath>.*) {
     	proxy_pass https://docker-nextcloud$ndpath$is_args$args;
         proxy_ssl_certificate     /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
     	proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;

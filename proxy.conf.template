@@ -72,29 +72,6 @@ server {
 }
 
 server {
-    server_name nextcloud.${SubDomain} nextcloud.${PrimaryDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-    
-    location = /nextcloud {
-    	return 301 /nextcloud/;
-	break;
-    }
-    
-    location ~/nextcloud/(?<ndpath>.*) {
-    	proxy_pass https://docker-nextcloud$ndpath$is_args$args;
-        proxy_ssl_certificate     /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    	proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-	break;
-    }
-}
-
-server {
     server_name genshin.${PrimaryDomain};
     charset utf-8;
    
@@ -354,3 +331,24 @@ server {
 	break;
     }
  }
+ 
+ 
+server {
+    server_name nextcloud.${SubDomain} nextcloud.${PrimaryDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+
+    location / {
+    	proxy_pass https://docker-nextcloud;
+        proxy_ssl_certificate     /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    	proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+	break;
+    }
+}
+

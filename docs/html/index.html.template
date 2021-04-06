@@ -99,12 +99,12 @@
                 url: "https://" + host + "/netdata",
                 img: "img/icon_monitoring.svg"
             },
-            {
-                name: "AirSonic",
-                text: "음악플레이어",
-                url: "https://" + host + "/airsonic",
-                img: "img/icon_airsonic.png"
-            },
+            //{
+            //    name: "AirSonic",
+            //    text: "음악플레이어",
+            //    url: "https://" + host + "/airsonic",
+            //    img: "img/icon_airsonic.png"
+            //},
             {
                 name: "PhotoShow",
                 text: "포토플레이어",

@@ -53,174 +53,6 @@ server {
 }
 
 server {
-    server_name code.${SubDomain} code.${PrimaryDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-    
-    location / {
-    	proxy_pass         http://${PrimaryDomain}:8080;
-	    proxy_http_version      1.1;
-    	proxy_set_header       Upgrade $http_upgrade;
-    	proxy_set_header       Connection "upgrade";
-	break;
-    }
-}
-
-server {
-    server_name genshin.${PrimaryDomain};
-    charset utf-8;
-   
-    root /usr/share/nginx/html/static/genshin-map/Yuanshenditu/;
-       
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-}
-
-server {
-    server_name genshin.${SubDomain};
-    charset utf-8;
-    
-    listen 80;
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-    
-    location / {
-        rewrite ^ https://genshin.${PrimaryDomain}$request_uri? permanent;
-	break;
-    }
-}
-
-server {
-    server_name tomcat.${PrimaryDomain} tomcat.${SubDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-    
-    location / {
-    	proxy_pass         http://${PrimaryDomain}:1205;
-	
-	proxy_read_timeout 999999;
-   	proxy_connect_timeout 999999;
-   	proxy_send_timeout 999999;
-   	send_timeout 999999;
-   	proxy_redirect         off;
-	
-	proxy_http_version 1.1;
-	proxy_set_header Upgrade $http_upgrade;
-   	proxy_set_header Connection 'upgrade';
-   	proxy_set_header Host $host;
-   	proxy_cache_bypass $http_upgrade;
-	break;
-    }
-}
-
-server {
-    server_name jellyfin.${PrimaryDomain} jellyfin.${SubDomain};
-    charset utf-8;
-    
-    listen 80;
-    
-    resolver 127.0.0.1 valid=30;
-    
-    location / {
-        proxy_pass http://${PrimaryDomain}:8096;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Protocol $scheme;
-        proxy_set_header X-Forwarded-Host $http_host;
-
-        proxy_buffering off;
-    }
-
-    location = /web/ {
-        proxy_pass http://${PrimaryDomain}:8096/web/index.html;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Protocol $scheme;
-        proxy_set_header X-Forwarded-Host $http_host;
-    }
-
-    location /socket {
-        proxy_pass http://${PrimaryDomain}:8096;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Protocol $scheme;
-        proxy_set_header X-Forwarded-Host $http_host;
-    }
-}
-
-server {
-    server_name jenkins.${PrimaryDomain} jenkins.${SubDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-    
-    location / {
-    	proxy_pass         http://${PrimaryDomain}:1203;
-	proxy_http_version      1.1;
-    	proxy_set_header       Upgrade $http_upgrade;
-    	proxy_set_header       Connection "upgrade";
-	break;
-    }
-}
-
-server {
-    server_name nextcloud.${SubDomain} nextcloud.${PrimaryDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-    
-
-    location / {
-    	proxy_pass https://docker-nextcloud;
-        proxy_ssl_certificate     /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    	proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-	
-	proxy_read_timeout 5000;
-   	proxy_connect_timeout 5000;
-   	proxy_send_timeout 5000;
-   	send_timeout 5000;
-	
-   	proxy_set_header Connection 'upgrade';
-   	proxy_set_header Host $host;
-   	proxy_cache_bypass $http_upgrade;
-	break;
-    }
-}
-
-server {
     charset utf-8;
     server_name ${PrimaryDomain} ${SubDomain} home.${SubDomain};
 
@@ -403,3 +235,168 @@ server {
 	break;
     }
  }
+
+server {
+    server_name code.${SubDomain} code.${PrimaryDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass         http://${PrimaryDomain}:8080;
+	    proxy_http_version      1.1;
+    	proxy_set_header       Upgrade $http_upgrade;
+    	proxy_set_header       Connection "upgrade";
+	break;
+    }
+}
+
+server {
+    server_name genshin.${PrimaryDomain};
+    charset utf-8;
+   
+    root /usr/share/nginx/html/static/genshin-map/Yuanshenditu/;
+       
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+}
+
+server {
+    server_name genshin.${SubDomain};
+    charset utf-8;
+    
+    listen 80;
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+        rewrite ^ https://genshin.${PrimaryDomain}$request_uri? permanent;
+	break;
+    }
+}
+
+server {
+    server_name tomcat.${PrimaryDomain} tomcat.${SubDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass         http://${PrimaryDomain}:1205;
+	
+	proxy_read_timeout 999999;
+   	proxy_connect_timeout 999999;
+   	proxy_send_timeout 999999;
+   	send_timeout 999999;
+   	proxy_redirect         off;
+	
+	proxy_http_version 1.1;
+	proxy_set_header Upgrade $http_upgrade;
+   	proxy_set_header Connection 'upgrade';
+   	proxy_set_header Host $host;
+   	proxy_cache_bypass $http_upgrade;
+	break;
+    }
+}
+
+server {
+    listen 80;
+    server_name jellyfin.${PrimaryDomain} jellyfin.${SubDomain};
+    charset utf-8;
+    
+    location / {
+        proxy_pass http://${PrimaryDomain}:8096;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Protocol $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+
+        proxy_buffering off;
+    }
+
+    location = /web/ {
+        proxy_pass http://${PrimaryDomain}:8096/web/index.html;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Protocol $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+    }
+
+    location /socket {
+        proxy_pass http://${PrimaryDomain}:8096;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Protocol $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+    }
+}
+
+server {
+    server_name jenkins.${PrimaryDomain} jenkins.${SubDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass         http://${PrimaryDomain}:1203;
+	proxy_http_version      1.1;
+    	proxy_set_header       Upgrade $http_upgrade;
+    	proxy_set_header       Connection "upgrade";
+	break;
+    }
+}
+
+server {
+    server_name nextcloud.${SubDomain} nextcloud.${PrimaryDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+    
+
+    location / {
+    	proxy_pass https://docker-nextcloud;
+        proxy_ssl_certificate     /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    	proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
+	
+	proxy_read_timeout 5000;
+   	proxy_connect_timeout 5000;
+   	proxy_send_timeout 5000;
+   	send_timeout 5000;
+	
+   	proxy_set_header Connection 'upgrade';
+   	proxy_set_header Host $host;
+   	proxy_cache_bypass $http_upgrade;
+	break;
+    }
+}

@@ -328,7 +328,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
         
     location / {
-	  proxy_pass http://docker-serviio/;
+	  proxy_pass http://docker-serviio;
 
 	  proxy_set_header X-Real-IP $remote_addr;
 	  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

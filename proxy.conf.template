@@ -34,7 +34,7 @@ upstream docker-nextcloud {
 }
 
 upstream docker-jellyfin {
-    server jellyfin:8920;
+    server jellyfin:8096;
 }
 
 server {

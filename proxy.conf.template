@@ -346,10 +346,6 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header X-Content-Type-Options "nosniff";
     
-    location = / {
-        return 302 https://$host/web/;
-    }
-
     location / {
         proxy_pass http://${PrimaryDomain}:8096;
         proxy_set_header Host $host;

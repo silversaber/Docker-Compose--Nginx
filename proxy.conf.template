@@ -33,10 +33,6 @@ upstream docker-nextcloud {
     server nextcloud:443;
 }
 
-upstream docker-serviio {
-    server serviio:23423;
-}
-
 server {
     listen 80;
  
@@ -315,34 +311,6 @@ server {
    	proxy_cache_bypass $http_upgrade;
 	break;
     }
-}
-
-server {
-    server_name serviio.${PrimaryDomain} serviio.${SubDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-        
-    location / {
-	  proxy_pass http://docker-serviio;
-
-	  proxy_set_header X-Real-IP $remote_addr;
-	  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	  proxy_set_header Host $http_host;
-
-	  proxy_set_header        X-Forwarded-Proto $scheme;
-
-	  # By default we dont want redirect it
-	  proxy_redirect off;
-
-	  # Cache
-	  proxy_buffering off;
-	  proxy_cache off;
-     }
 }
 
 server {

@@ -33,10 +33,6 @@ upstream docker-nextcloud {
     server nextcloud:443;
 }
 
-upstream docker-emby {
-    server emby:8920;
-}
-
 server {
     listen 80;
  
@@ -347,7 +343,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
     
     location / {
-    	proxy_pass         https://docker-emby;
+    	proxy_pass         https://${PrimaryDomain}:8920;
 	proxy_http_version      1.1;
     	proxy_set_header       Upgrade $http_upgrade;
     	proxy_set_header       Connection "upgrade";

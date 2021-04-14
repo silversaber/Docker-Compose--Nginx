@@ -130,9 +130,9 @@
                 img: "img/icon_nextcloud.png"
             },
             {
-                name: "Jellyfin",
-                text: "Jellyfin",
-                url: "https://jellyfin." + host,
+                name: "Emby",
+                text: "Emby",
+                url: "https://emby." + host,
                 img: "img/icon_jellyfin.png"
             }
         ];

@@ -33,6 +33,10 @@ upstream docker-nextcloud {
     server nextcloud:443;
 }
 
+upstream docker-jellyfin {
+    server jellyfin:8096;
+}
+
 server {
     listen 80;
  
@@ -341,13 +345,9 @@ server {
     ssl on;
     ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
-    
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
-    add_header X-Content-Type-Options "nosniff";
-    
+        
     location / {
-        proxy_pass http://${PrimaryDomain}:8096;
+        proxy_pass http://docker-jellyfin;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -361,7 +361,7 @@ server {
     
     location = /web/ {
         # Proxy main Jellyfin traffic
-        proxy_pass http://${PrimaryDomain}:8096/web/index.html;
+        proxy_pass http://docker-jellyfin/web/index.html;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -372,7 +372,7 @@ server {
 
     location /socket {
         # Proxy Jellyfin Websockets traffic
-        proxy_pass http://${PrimaryDomain}:8096;
+        proxy_pass http://docker-jellyfin;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";

@@ -31,6 +31,7 @@ upstream docker-photoshow {
 
 upstream docker-nextcloud {
     server nextcloud:443;
+    keepalive 100;
 }
 
 upstream docker-jellyfin {
@@ -44,7 +45,7 @@ server {
     
     location ^~ /.well-known/acme-challenge/ {
         alias /var/www/certbot/;
-	default_type "text/plain";
+	    default_type "text/plain";
         autoindex on;
         dav_access all:r;
 	break;
@@ -70,8 +71,8 @@ server {
     
     location /.well-known/acme-challenge/ {
     	alias /var/www/certbot/;
-	default_type "text/plain";
-	autoindex on;
+	    default_type "text/plain";
+	    autoindex on;
         dav_access all:r;
 	break;
     }
@@ -81,6 +82,7 @@ server {
         error_page 404 /404.html;
 	break;
     }
+
     location /img/ {
         autoindex on;
 	break;
@@ -140,51 +142,51 @@ server {
         auth_basic "restricted";
         auth_basic_user_file /etc/nginx/user.htpasswd;
 
-	proxy_redirect off;
-	proxy_set_header Host $host;
+	    proxy_redirect off;
+	    proxy_set_header Host $host;
 
-	proxy_set_header X-Forwarded-Host $host;
-	proxy_set_header X-Forwarded-Server $host;
-	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	proxy_http_version 1.1;
-	proxy_pass_request_headers on;
-	proxy_set_header Connection "keep-alive";
-	proxy_store off;
-	proxy_pass http://docker-netdata/$ndpath$is_args$args;
+	    proxy_set_header X-Forwarded-Host $host;
+	    proxy_set_header X-Forwarded-Server $host;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	    proxy_http_version 1.1;
+	    proxy_pass_request_headers on;
+	    proxy_set_header Connection "keep-alive";
+	    proxy_store off;
+	    proxy_pass http://docker-netdata/$ndpath$is_args$args;
 
-	gzip on;
-	gzip_proxied any;
-	gzip_types *;
-	break;
-     }
+	    gzip on;
+	    gzip_proxied any;
+	    gzip_types *;
+	    break;
+    }
 
     location /code-server {
         return 301 http://code.${SubDomain}/;
     }
     
     location ^~ /jenkins/ {
-	proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
-	proxy_redirect http:// https://;
-	sendfile off;
+	    proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
+	    proxy_redirect http:// https://;
+	    sendfile off;
 
-	proxy_set_header   Host             $host;
-	proxy_set_header   X-Real-IP        $remote_addr;
-	proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-	proxy_max_temp_file_size 0;
+	    proxy_set_header   Host             $host;
+	    proxy_set_header   X-Real-IP        $remote_addr;
+	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+	    proxy_max_temp_file_size 0;
 
-	client_max_body_size       10m;
-	client_body_buffer_size    128k;
+	    client_max_body_size       10m;
+	    client_body_buffer_size    128k;
 
-	proxy_connect_timeout      90;
-	proxy_send_timeout         90;
-	proxy_read_timeout         90;
+	    proxy_connect_timeout      90;
+	    proxy_send_timeout         90;
+	    proxy_read_timeout         90;
 
-	proxy_temp_file_write_size 64k;
+	    proxy_temp_file_write_size 64k;
 
-	proxy_http_version 1.1;
-	proxy_request_buffering off;
-	proxy_buffering off;
-	break;
+	    proxy_http_version 1.1;
+	    proxy_request_buffering off;
+	    proxy_buffering off;
+	    break;
     }
 
     location /jdownloader2/ {
@@ -194,10 +196,10 @@ server {
 
     location /jdownloader2/websockify {
     	proxy_pass http://docker-jdownloader-2/websockify/;
-	proxy_http_version 1.1;
+	    proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
-	proxy_read_timeout 86400;
+	    proxy_read_timeout 86400;
 	break;
     }
 
@@ -396,20 +398,19 @@ server {
     ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
     
-
     location / {
     	proxy_pass https://docker-nextcloud;
         proxy_ssl_certificate     /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
     	proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
 	
-	proxy_read_timeout 5000;
-   	proxy_connect_timeout 5000;
-   	proxy_send_timeout 5000;
-   	send_timeout 5000;
-	
-   	proxy_set_header Connection 'upgrade';
-   	proxy_set_header Host $host;
-   	proxy_cache_bypass $http_upgrade;
-	break;
+	    proxy_read_timeout 40000;
+   	    proxy_connect_timeout 40000;
+   	    proxy_send_timeout 40000;
+   	    send_timeout 40000;
+    
+   	    proxy_set_header Connection 'upgrade';
+   	    proxy_set_header Host $host;
+   	    proxy_cache_bypass $http_upgrade;
+	    break;
     }
 }

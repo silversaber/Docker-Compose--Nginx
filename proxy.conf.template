@@ -45,7 +45,7 @@ server {
     
     location ^~ /.well-known/acme-challenge/ {
         alias /var/www/certbot/;
-	    default_type "text/plain";
+	default_type "text/plain";
         autoindex on;
         dav_access all:r;
 	break;
@@ -71,8 +71,8 @@ server {
     
     location /.well-known/acme-challenge/ {
     	alias /var/www/certbot/;
-	    default_type "text/plain";
-	    autoindex on;
+    	default_type "text/plain";
+    	autoindex on;
         dav_access all:r;
 	break;
     }

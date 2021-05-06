@@ -396,7 +396,11 @@ server {
     
     ssl on;
     ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pe
+    
+    add_header Strict-Transport-Security "max-age=15552000; 
+    includeSubdomains;
+    preload";
     
     location / {
     	proxy_pass https://docker-nextcloud;

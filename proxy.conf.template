@@ -390,7 +390,6 @@ server {
 
 server {
     server_name nextcloud.${SubDomain} nextcloud.${PrimaryDomain};
-    add_header Strict-Transport-Security "max-age=15552000; includeSubdomains; preload";
     charset utf-8;
     
     listen 443 ssl;
@@ -417,4 +416,6 @@ server {
    	    proxy_cache_bypass $http_upgrade;
 	    break;
     }
+
+    add_header Strict-Transport-Security "max-age=15552000; includeSubdomains; preload";
 }

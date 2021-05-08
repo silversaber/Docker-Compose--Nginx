@@ -410,7 +410,7 @@ server {
    	    proxy_send_timeout 40000;
    	    send_timeout 40000;
 
-        client_max_body_size 10m;
+        client_max_body_size 0;
 	    client_body_buffer_size    128k;
     
    	    proxy_set_header Connection 'upgrade';

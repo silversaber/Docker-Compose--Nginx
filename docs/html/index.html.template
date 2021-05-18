@@ -105,12 +105,12 @@
             //    url: "https://" + host + "/airsonic",
             //    img: "img/icon_airsonic.png"
             //},
-            {
-                name: "PhotoShow",
-                text: "포토플레이어",
-                url: "https://" + host + "/photoshow",
-                img: "img/icon_gallery.svg"
-            },
+            //{
+            //    name: "PhotoShow",
+            //    text: "포토플레이어",
+            //    url: "https://" + host + "/photoshow",
+            //    img: "img/icon_gallery.svg"
+            //},
             {
                 name: "Tomcat",
                 text: "톰캣",

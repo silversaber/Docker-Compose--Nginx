@@ -66,8 +66,8 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     location /.well-known/acme-challenge/ {
     	alias /var/www/certbot/;
@@ -325,8 +325,8 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     location / {
     	proxy_pass         http://${PrimaryDomain}:1203;

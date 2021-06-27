@@ -21,9 +21,9 @@ upstream docker-netdata {
 #    keepalive 100;
 #}
 
-upstream docker-jenkins {
-    server jenkins:1203;
-}
+#upstream docker-jenkins {
+#    server jenkins:1203;
+#}
 
 #upstream docker-photoshow {
 #    server photoshow:80;
@@ -164,30 +164,29 @@ server {
         return 301 http://code.${SubDomain}/;
     }
     
-    location ^~ /jenkins/ {
-	    proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
-	    proxy_redirect http:// https://;
-	    sendfile off;
-
-	    proxy_set_header   Host             $host;
-	    proxy_set_header   X-Real-IP        $remote_addr;
-	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-	    proxy_max_temp_file_size 0;
-
-	    client_max_body_size       10m;
-	    client_body_buffer_size    128k;
-
-	    proxy_connect_timeout      90;
-	    proxy_send_timeout         90;
-	    proxy_read_timeout         90;
-
-	    proxy_temp_file_write_size 64k;
-
-	    proxy_http_version 1.1;
-	    proxy_request_buffering off;
-	    proxy_buffering off;
-	    break;
-    }
+    #location ^~ /jenkins/ {
+	#    proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
+	#   proxy_redirect http:// https://;
+	#    sendfile off;
+#
+#	    proxy_set_header   Host             $host;
+#	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+#	    proxy_max_temp_file_size 0;
+#
+#	    client_max_body_size       10m;
+#	    client_body_buffer_size    128k;
+#
+#	    proxy_connect_timeout      90;
+#	    proxy_send_timeout         90;
+#	    proxy_read_timeout         90;
+#
+#	    proxy_temp_file_write_size 64k;
+#
+#	    proxy_http_version 1.1;
+#	    proxy_request_buffering off;
+#	    proxy_buffering off;
+#	    break;
+ #   }
 
     location /jdownloader2/ {
         proxy_pass http://docker-jdownloader-2/;

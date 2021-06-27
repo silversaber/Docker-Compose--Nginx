@@ -248,8 +248,8 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     location / {
     	proxy_pass         http://${PrimaryDomain}:8080;
@@ -269,8 +269,8 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
 }
 
 server {
@@ -281,8 +281,8 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     location / {
         rewrite ^ https://genshin.${PrimaryDomain}$request_uri? permanent;
@@ -297,8 +297,8 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     location / {
     	proxy_pass         http://${PrimaryDomain}:1205;
@@ -344,8 +344,8 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     resolver 127.0.0.1 valid=30;
         
     location / {
@@ -394,15 +394,15 @@ server {
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     add_header Strict-Transport-Security "max-age=15552000; includeSubdomains; preload";
 
     location / {
     	proxy_pass https://docker-nextcloud;
-        proxy_ssl_certificate     /etc/letsencrypt/live/${PrimaryDomain}-0001/fullchain.pem;
-    	proxy_ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}-0001/privkey.pem;
+        proxy_ssl_certificate     /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    	proxy_ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
 	
 	    proxy_read_timeout 40000;
    	    proxy_connect_timeout 40000;

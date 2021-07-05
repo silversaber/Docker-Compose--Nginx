@@ -154,13 +154,13 @@ server {
  #   }
  
     location = /jdownloader2 {
-    	return 301 $scheme://$http_host/jdownloader-2/;
+    	return 301 $scheme://$http_host/jdownloader2/;
 	break;
     }
     
     location /jdownloader2/ {
 	proxy_pass http://docker-jdownloader-2/;
-        location /jdownloader-2/websockify {
+        location /jdownloader2/websockify {
             proxy_pass http://docker-jdownloader-2/websockify/;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;

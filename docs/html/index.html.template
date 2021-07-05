@@ -78,7 +78,7 @@
             {
                 name: "JDownloader2",
                 text: "Download 프로그램",
-                url: "https://" + host + "/jdownloader2",
+                url: "https://" + host + "/jdownloader-2",
                 img: "img/icon_jdownloader.svg"
             },
             {
@@ -99,18 +99,6 @@
                 url: "https://" + host + "/netdata",
                 img: "img/icon_monitoring.svg"
             },
-            //{
-            //    name: "AirSonic",
-            //    text: "음악플레이어",
-            //    url: "https://" + host + "/airsonic",
-            //    img: "img/icon_airsonic.png"
-            //},
-            //{
-            //    name: "PhotoShow",
-            //    text: "포토플레이어",
-            //    url: "https://" + host + "/photoshow",
-            //    img: "img/icon_gallery.svg"
-            //},
             {
                 name: "Tomcat",
                 text: "톰캣",

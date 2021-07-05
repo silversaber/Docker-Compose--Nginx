@@ -16,17 +16,8 @@ upstream docker-netdata {
     keepalive 64;
 }
 
-#upstream docker-airsonic {
-#    server airsonic:4040;
-#    keepalive 100;
-#}
-
 #upstream docker-jenkins {
 #    server jenkins:1203;
-#}
-
-#upstream docker-photoshow {
-#    server photoshow:80;
 #}
 
 upstream docker-nextcloud {
@@ -153,7 +144,7 @@ server {
 #	    break;
  #   }
  
-    location /jdownloader2/ {
+    location /jdownloader2 {
         proxy_pass http://docker-jdownloader-2/;
         proxy_set_header Host $host;
         proxy_redirect off;

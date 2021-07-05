@@ -155,17 +155,14 @@ server {
  
     location /jdownloader2/ {
         proxy_pass http://docker-jdownloader-2/;
+        proxy_set_header Host $host;
+        proxy_redirect off;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
 	    break;
     }
 
-    location /jdownloader2/websockify {
-    	proxy_pass http://docker-jdownloader-2/websockify/;
-	    proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection $connection_upgrade;
-	    proxy_read_timeout 86400;
-	    break;
-    }
 
     location /hello {
         alias /var/webdav/file;

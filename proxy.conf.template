@@ -8,8 +8,7 @@ upstream docker-transmission {
 }
 
 upstream docker-jdownloader-2 {
-    server localhost:5800;
-#    server jdownloader2:5800;
+    server jdownloader2:5800;
 }
 
 upstream docker-netdata {
@@ -145,8 +144,12 @@ server {
 #	    break;
  #   }
  
-    location = /jdownloader-2 {return 301 $scheme://$http_host/jdownloader-2/;}
-	location /jdownloader-2/ {
+    location = /jdownloader-2 {
+        return 301 $scheme://$http_host/jdownloader-2/;
+        break;    
+    }
+	
+    location /jdownloader-2/ {
 		proxy_pass http://docker-jdownloader-2/;
 		location /jdownloader-2/websockify {
 			proxy_pass http://docker-jdownloader-2/websockify/;
@@ -155,6 +158,7 @@ server {
 			proxy_set_header Connection $connection_upgrade;
 			proxy_read_timeout 86400;
 		}
+        break;
 	}
 
 

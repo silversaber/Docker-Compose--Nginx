@@ -8,7 +8,7 @@ upstream docker-transmission {
 }
 
 upstream docker-jdownloader-2 {
-    server 127.0.0.1:5800;
+    server localhost:5800;
 #    server jdownloader2:5800;
 }
 

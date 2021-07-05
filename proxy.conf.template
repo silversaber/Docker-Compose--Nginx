@@ -8,7 +8,7 @@ upstream docker-transmission {
 }
 
 upstream docker-jdownloader-2 {
-    server jdownloader2:5800;
+    server jdownloader2:5900;
 }
 
 upstream docker-netdata {

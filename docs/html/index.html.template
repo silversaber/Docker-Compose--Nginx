@@ -78,7 +78,7 @@
             {
                 name: "JDownloader2",
                 text: "Download 프로그램",
-                url: "https://" + host + ":5800",
+                url: "http://" + host + ":5800",
                 //url: "https://" + host + "/jdownloader-2",
                 img: "img/icon_jdownloader.svg"
             },

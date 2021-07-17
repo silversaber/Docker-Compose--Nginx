@@ -123,7 +123,13 @@
                 text: "Jellyfin",
                 url: "https://jellyfin." + host,
                 img: "img/icon_jellyfin.png"
-            }
+            },
+            {
+                name: "Lychee",
+                text: "Lychee",
+                url: "https://"+ host + "/lychee",
+                img: "img/icon_icon_monitoring.svg"
+            },
         ];
 
         function linkClik(obj) {

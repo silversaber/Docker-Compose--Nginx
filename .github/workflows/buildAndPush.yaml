@@ -21,9 +21,9 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          # tags: aglide100/Docker-Compose-Nginx:latest
+          # tags: silversaber/Docker-Compose-Nginx:latest
           registry: ghcr.io
           username: "aglide100"
           password: ${{ secrets.ghcrToken }}
-          repository: aglide100/Docker-Compose-Nginx:latest
+          repository: silversaber/Docker-Compose-Nginx:latest
           tags: latest

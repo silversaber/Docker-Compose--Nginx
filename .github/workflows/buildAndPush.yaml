@@ -29,4 +29,3 @@ jobs:
           push: true
           tags: |
             silversaber/docker-compose-nginx:latest
-            ghcr.io/silversaber/docker-compose-nginx:latest

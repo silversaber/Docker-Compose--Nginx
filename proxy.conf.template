@@ -29,9 +29,9 @@ upstream docker-jellyfin {
     server jellyfin:8096;
 }
 
-upstream docker-lychee {
-    server lychee:80;
-}
+#upstream docker-lychee {
+#    server lychee:80;
+#}
 
 server {
     listen 80;
@@ -93,15 +93,15 @@ server {
 	    break;
     }
 
-    location /lychee {
-        proxy_pass         http://docker-lychee;
-        proxy_redirect     off;
-        proxy_set_header   Host $host;
-        proxy_set_header   X-Real-IP $remote_addr;
-        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header   X-Forwarded-Host $server_name;
-	    break;
-    }
+    #location /lychee {
+    #    proxy_pass         http://docker-lychee;
+    #   proxy_redirect     off;
+    #    proxy_set_header   Host $host;
+    #    proxy_set_header   X-Real-IP $remote_addr;
+    #    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+    #    proxy_set_header   X-Forwarded-Host $server_name;
+	#    break;
+    #}
 
     location = /netdata {
         return 301 /netdata/;

@@ -16,10 +16,6 @@ upstream docker-netdata {
     keepalive 64;
 }
 
-#upstream docker-jenkins {
-#    server jenkins:1203;
-#}
-
 upstream docker-nextcloud {
     server nextcloud:443;
     keepalive 100;
@@ -32,6 +28,11 @@ upstream docker-jellyfin {
 #upstream docker-lychee {
 #    server lychee:80;
 #}
+
+#upstream docker-jenkins {
+#    server jenkins:1203;
+#}
+
 
 server {
     listen 80;
@@ -93,16 +94,6 @@ server {
 	    break;
     }
 
-    #location /lychee {
-    #    proxy_pass         http://docker-lychee;
-    #   proxy_redirect     off;
-    #    proxy_set_header   Host $host;
-    #    proxy_set_header   X-Real-IP $remote_addr;
-    #    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
-    #    proxy_set_header   X-Forwarded-Host $server_name;
-	#    break;
-    #}
-
     location = /netdata {
         return 301 /netdata/;
 	    break;
@@ -134,30 +125,6 @@ server {
         return 301 http://code.${SubDomain}/;
     }
     
-    #location ^~ /jenkins/ {
-	#    proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
-	#   proxy_redirect http:// https://;
-	#    sendfile off;
-#
-#	    proxy_set_header   Host             $host;
-#	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-#	    proxy_max_temp_file_size 0;
-#
-#	    client_max_body_size       10m;
-#	    client_body_buffer_size    128k;
-#
-#	    proxy_connect_timeout      90;
-#	    proxy_send_timeout         90;
-#	    proxy_read_timeout         90;
-#
-#	    proxy_temp_file_write_size 64k;
-#
-#	    proxy_http_version 1.1;
-#	    proxy_request_buffering off;
-#	    proxy_buffering off;
-#	    break;
-    #}
- 
     location = /jdownloader-2 {
         return 301 $scheme://$http_host/jdownloader-2/;
         break;    
@@ -181,29 +148,38 @@ server {
         break;
 	}
 
+    #location /lychee {
+    #    proxy_pass         http://docker-lychee;
+    #   proxy_redirect     off;
+    #    proxy_set_header   Host $host;
+    #    proxy_set_header   X-Real-IP $remote_addr;
+    #    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+    #    proxy_set_header   X-Forwarded-Host $server_name;
+	#    break;
+    #}
 
-    location /hello {
-        alias /var/webdav/file;
-       
-        autoindex     on;
-        create_full_put_path  on;
-        
-        dav_methods     PUT DELETE MKCOL COPY MOVE;
-        dav_ext_methods   PROPFIND OPTIONS;
-        
-        auth_basic "restricted";
-        auth_basic_user_file /etc/nginx/user.htpasswd;
-        dav_access    user:rw group:rw;
+    location ^~ /jenkins/ {
+	    proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
+	    proxy_redirect http:// https://;
+	    sendfile off;
 
-        client_body_temp_path /var/webdav/client_temp;
-        client_max_body_size 0;
-        
-        send_timeout  36000s;
-        proxy_connect_timeout  36000s;
-        proxy_read_timeout  36000s;
-        proxy_send_timeout  36000s;
-        proxy_request_buffering off;
-	break;
+	    proxy_set_header   Host             $host;
+	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+	    proxy_max_temp_file_size 0;
+
+	    client_max_body_size       10m;
+	    client_body_buffer_size    128k;
+
+	    proxy_connect_timeout      90;
+	    proxy_send_timeout         90;
+	    proxy_read_timeout         90;
+
+	    proxy_temp_file_write_size 64k;
+
+	    proxy_http_version 1.1;
+	    proxy_request_buffering off;
+	    proxy_buffering off;
+	    break;
     }
 
     location /share {
@@ -236,36 +212,6 @@ server {
 	    proxy_http_version      1.1;
     	proxy_set_header       Upgrade $http_upgrade;
     	proxy_set_header       Connection "upgrade";
-	break;
-    }
-}
-
-server {
-    server_name genshin.${PrimaryDomain};
-    charset utf-8;
-   
-    root /usr/share/nginx/html/static/genshin-map/Yuanshenditu/;
-       
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-}
-
-server {
-    server_name genshin.${SubDomain};
-    charset utf-8;
-    
-    listen 80;
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    
-    location / {
-        rewrite ^ https://genshin.${PrimaryDomain}$request_uri? permanent;
 	break;
     }
 }

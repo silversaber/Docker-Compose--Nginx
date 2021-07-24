@@ -28,4 +28,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            silversaber/docker-compose-nginx:latest
+            aglide100/docker-webserver-nginx:latest

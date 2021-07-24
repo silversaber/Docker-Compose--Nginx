@@ -107,12 +107,6 @@
                 img: "img/icon_tomcat.svg"
             },
             {
-                name: "Genshin Map",
-                text: "원신맵",
-                url: "https://genshin." + host,
-                img: "img/icon_genshin.png"
-            },
-            {
                 name: "Next Cloud",
                 text: "nextcloud",
                 url: "https://nextcloud." + host + "/nextcloud",
@@ -123,12 +117,6 @@
                 text: "Jellyfin",
                 url: "https://jellyfin." + host,
                 img: "img/icon_jellyfin.png"
-            },
-            {
-                name: "Lychee",
-                text: "Lychee",
-                url: "https://"+ host + "/lychee",
-                img: "img/icon_icon_monitoring.svg"
             },
         ];
 

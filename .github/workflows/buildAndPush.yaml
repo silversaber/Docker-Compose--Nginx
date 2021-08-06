@@ -27,5 +27,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            aglide100/docker-webserver-nginx:latest
+          tags: ghcr.io/aglide100/docker-webserver-nginx:latest

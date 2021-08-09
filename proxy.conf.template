@@ -335,7 +335,6 @@ server {
    	proxy_send_timeout 1000;
    	send_timeout 1000;
 	
-	large_client_header_buffers 4 64k;
 	client_header_buffer_size 2k;
         client_max_body_size 0;
 	client_body_buffer_size 1024k;

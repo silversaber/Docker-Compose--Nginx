@@ -48,7 +48,6 @@ server {
     }
 
     location / {
-        limit_con zone_addr  30;
         rewrite ^ https://$host$request_uri? permanent;
     }
 }

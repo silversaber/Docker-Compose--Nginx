@@ -348,8 +348,4 @@ server {
    	    proxy_connect_timeout 1000;
    	    proxy_send_timeout 1000;
     }
-
-    location ~* \.(?:jpg|jpeg|gif|png|ico|woff2|js|css)$ {
-        access_log off;
-    }
 }

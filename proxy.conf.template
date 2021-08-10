@@ -136,7 +136,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-NginX-Proxy true;
 
-		proxy_pass http://docker-jdownloader-2/;
+	proxy_pass http://docker-jdownloader-2/;
         
 		location /jdownloader-2/websockify {
 			proxy_pass http://docker-jdownloader-2/websockify/;
@@ -324,18 +324,33 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     add_header Strict-Transport-Security "max-age=15552000; includeSubdomains; preload";
+    
+     # security headers
+    add_header X-Frame-Options        SAMEORIGIN;
+    add_header X-XSS-Protection        "1; mode=block" always;
+    add_header X-Content-Type-Options  nosniff;
+    add_header Referrer-Policy         "no-referrer-when-downgrade" always;
+    add_header Strict-Transport-Security "max-age=63072000" always;
+    
+    # gzip
+    gzip            on;
+    gzip_vary       on;
+    gzip_proxied    any;
+    gzip_comp_level 6;
+    gzip_types      text/plain text/css text/xml application/json application/javascript application/rss+xml application/atom+xml image/svg+xml;
 
     location / {
-    	proxy_pass https://docker-nextcloud;
-        proxy_ssl_certificate     /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    	proxy_ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
+    	proxy_pass 			   https://docker-nextcloud;
+	proxy_http_version                 1.1;
+        proxy_ssl_certificate     	   /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    	proxy_ssl_certificate_key	   /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
 	
 	proxy_read_timeout 1000;
    	proxy_connect_timeout 1000;
    	proxy_send_timeout 1000;
    	send_timeout 1000;
 	
-        client_max_body_size 0;
+        client_max_body_size 10G;
 	client_body_buffer_size 1024k;
     
    	proxy_set_header Connection 'upgrade';

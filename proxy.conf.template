@@ -34,7 +34,6 @@ upstream docker-code-server {
     server code-server:8443;
 }
 
-
 server {
     listen 80;
  
@@ -131,7 +130,7 @@ server {
 	    proxy_pass http://docker-jdownloader2;
         
 		location /jdownloader-2/websockify {
-			proxy_pass http://docker-jdownloader-2/websockify/;
+			proxy_pass http://docker-jdownloader2/websockify/;
 			proxy_http_version 1.1;
 			proxy_set_header Upgrade $http_upgrade;
 			proxy_set_header Connection $connection_upgrade;

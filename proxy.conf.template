@@ -127,7 +127,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-NginX-Proxy true;
 
-	    proxy_pass http://docker-jdownloader2/;
+	    proxy_pass http://docker-jdownloader2;
         
 		location /jdownloader-2/websockify {
 			proxy_pass http://docker-jdownloader2/websockify/;
@@ -137,29 +137,6 @@ server {
 			proxy_read_timeout 86400;
 		}
 	}
-
-    location /jenkins {
-	    proxy_pass http://docker-jenkins;
-	    sendfile off;
-    
-	    proxy_set_header   Host             $host;
-	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-	    proxy_max_temp_file_size 0;
-    
-	    client_max_body_size       10m;
-	    client_body_buffer_size    128k;
-    
-	    proxy_connect_timeout      90;
-	    proxy_send_timeout         90;
-	    proxy_read_timeout         90;
-    
-	    proxy_temp_file_write_size 64k;
-    
-	    proxy_http_version 1.1;
-	    proxy_request_buffering off;
-	    proxy_buffering off;
-	    
-    }
 
     location /share {
         alias /var/webdav/file/share;
@@ -220,6 +197,23 @@ server {
 #    }
 #}
 
+server {
+    server_name jenkins.${PrimaryDomain} jenkins.${SubDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass http://docker-jenkins;
+	    proxy_http_version 1.1;
+    	proxy_set_header Upgrade $http_upgrade;
+    	proxy_set_header Connection "upgrade";
+    }
+}
 
 server {
     server_name jellyfin.${PrimaryDomain} jellyfin.${SubDomain};

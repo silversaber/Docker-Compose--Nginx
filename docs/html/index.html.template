@@ -87,12 +87,12 @@
                 url: "https://" + host + "/share",
                 img: "img/icon_folder.svg"
             },
-            //{
-            //    name: "Jenkins",
-            //    text: "프로젝트 배포툴",
-            //    url: "https://jenkins." + host,
-            //    img: "img/icon_jenkins.svg"
-            //},
+            {
+                name: "Jenkins",
+                text: "프로젝트 배포툴",
+                url: "https://jenkins." + host,
+                img: "img/icon_jenkins.svg"
+            },
             {
                 name: "NetData",
                 text: "서버 모니터링",

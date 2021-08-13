@@ -9,7 +9,7 @@ upstream docker-transmission {
 
 upstream docker-jdownloader-2 {
     server jdownloader2:5800;
-    server ${PrimaryDomain} backup;
+    #server ${PrimaryDomain} backup;
 }
 
 upstream docker-netdata {
@@ -31,7 +31,7 @@ upstream docker-jellyfin {
 #}
 
 upstream docker-code-server {
-    server code-server:8080;
+    server code-server:8443;
 }
 
 
@@ -115,7 +115,7 @@ server {
     }
 
     location /code-server {
-        return 301 http://code.${SubDomain}/;
+        return 301 http://code.${PrimaryDomain}/;
     }
     
     location = /jdownloader-2 {
@@ -128,7 +128,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-NginX-Proxy true;
 
-	    proxy_pass http://docker-jdownloader-2/;
+	    proxy_pass http://docker-jdownloader-2;
         
 		location /jdownloader-2/websockify {
 			proxy_pass http://docker-jdownloader-2/websockify/;

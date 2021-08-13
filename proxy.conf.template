@@ -127,7 +127,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-NginX-Proxy true;
 
-	    proxy_pass http://docker-jdownloader2;
+	    proxy_pass http://docker-jdownloader2/;
         
 		location /jdownloader-2/websockify {
 			proxy_pass http://docker-jdownloader2/websockify/;

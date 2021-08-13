@@ -78,8 +78,7 @@
             {
                 name: "JDownloader2",
                 text: "Download 프로그램",
-                url: "http://" + host + ":5800",
-                //url: "https://" + host + "/jdownloader-2",
+                url: "https://" + host + "/jdownloader-2",
                 img: "img/icon_jdownloader.svg"
             },
             {
@@ -88,24 +87,24 @@
                 url: "https://" + host + "/share",
                 img: "img/icon_folder.svg"
             },
-            {
-                name: "Jenkins",
-                text: "프로젝트 배포툴",
-                url: "https://jenkins." + host,
-                img: "img/icon_jenkins.svg"
-            },
+            //{
+            //    name: "Jenkins",
+            //    text: "프로젝트 배포툴",
+            //    url: "https://jenkins." + host,
+            //    img: "img/icon_jenkins.svg"
+            //},
             {
                 name: "NetData",
                 text: "서버 모니터링",
                 url: "https://" + host + "/netdata",
                 img: "img/icon_monitoring.svg"
             },
-            {
-                name: "Tomcat",
-                text: "톰캣",
-                url: "https://tomcat." + host + "/",
-                img: "img/icon_tomcat.svg"
-            },
+            //{
+            //    name: "Tomcat",
+            //    text: "톰캣",
+            //    url: "https://tomcat." + host + "/",
+            //    img: "img/icon_tomcat.svg"
+            //},
             {
                 name: "Next Cloud",
                 text: "nextcloud",

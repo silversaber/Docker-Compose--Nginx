@@ -26,13 +26,13 @@ upstream docker-jellyfin {
     server jellyfin:8096;
 }
 
-#upstream docker-lychee {
-#    server lychee:80;
-#}
-
 #upstream docker-jenkins {
 #    server jenkins:1203;
 #}
+
+upstream docker-code-server {
+    server code-server:8080;
+}
 
 
 server {
@@ -112,7 +112,6 @@ server {
 	    gzip on;
 	    gzip_proxied any;
 	    gzip_types *;
-	    
     }
 
     location /code-server {
@@ -121,7 +120,6 @@ server {
     
     location = /jdownloader-2 {
         return 301 $scheme://$http_host/jdownloader-2/;
-            
     }
 	
     location /jdownloader-2/ {
@@ -139,42 +137,31 @@ server {
 			proxy_set_header Connection $connection_upgrade;
 			proxy_read_timeout 86400;
 		}
-        
 	}
 
-    #location /lychee {
-    #    proxy_pass         http://docker-lychee;
-    #   proxy_redirect     off;
-    #    proxy_set_header   Host $host;
-    #    proxy_set_header   X-Real-IP $remote_addr;
-    #    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
-    #    proxy_set_header   X-Forwarded-Host $server_name;
+    #location ^~ /jenkins/ {
+	#    proxy_pass http://${PrimaryDomain}:1203/jenkins/;
+	#    proxy_redirect http:// https://;
+	#    sendfile off;
+    #
+	#    proxy_set_header   Host             $host;
+	#    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+	#    proxy_max_temp_file_size 0;
+    #
+	#    client_max_body_size       10m;
+	#    client_body_buffer_size    128k;
+    #
+	#    proxy_connect_timeout      90;
+	#    proxy_send_timeout         90;
+	#    proxy_read_timeout         90;
+    #
+	#    proxy_temp_file_write_size 64k;
+    #
+	#    proxy_http_version 1.1;
+	#    proxy_request_buffering off;
+	#    proxy_buffering off;
 	#    
     #}
-
-    location ^~ /jenkins/ {
-	    proxy_pass http://${PrimaryDomain}:1203/jenkins/;
-	    proxy_redirect http:// https://;
-	    sendfile off;
-
-	    proxy_set_header   Host             $host;
-	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-	    proxy_max_temp_file_size 0;
-
-	    client_max_body_size       10m;
-	    client_body_buffer_size    128k;
-
-	    proxy_connect_timeout      90;
-	    proxy_send_timeout         90;
-	    proxy_read_timeout         90;
-
-	    proxy_temp_file_write_size 64k;
-
-	    proxy_http_version 1.1;
-	    proxy_request_buffering off;
-	    proxy_buffering off;
-	    
-    }
 
     location /share {
         alias /var/webdav/file/share;
@@ -200,7 +187,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
     location / {
-    	proxy_pass         http://${PrimaryDomain}:8080;
+    	proxy_pass         http://docker-code-server;
 	    proxy_http_version      1.1;
     	proxy_set_header       Upgrade $http_upgrade;
     	proxy_set_header       Connection "upgrade";
@@ -235,23 +222,23 @@ server {
 #    }
 #}
 
-server {
-    server_name jenkins.${PrimaryDomain} jenkins.${SubDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    
-    location / {
-    	proxy_pass http://${PrimaryDomain}:1203;
-	    proxy_http_version 1.1;
-    	proxy_set_header Upgrade $http_upgrade;
-    	proxy_set_header Connection "upgrade";
-    }
-}
+#server {
+#    server_name jenkins.${PrimaryDomain} jenkins.${SubDomain};
+#    charset utf-8;
+#    
+#    listen 443 ssl;
+#    
+#    ssl on;
+#    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+#    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
+#    
+#    location / {
+#    	proxy_pass http://${PrimaryDomain}:1203;
+#	    proxy_http_version 1.1;
+#    	proxy_set_header Upgrade $http_upgrade;
+#    	proxy_set_header Connection "upgrade";
+#    }
+#}
 
 server {
     server_name jellyfin.${PrimaryDomain} jellyfin.${SubDomain};

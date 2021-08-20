@@ -77,6 +77,9 @@ server {
     }
     
     location /transmission {
+    	auth_basic "restricted";
+        auth_basic_user_file /etc/nginx/user.htpasswd;
+    
         proxy_pass http://docker-transmission;
         proxy_redirect off;
         proxy_set_header Host $host;

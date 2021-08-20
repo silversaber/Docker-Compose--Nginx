@@ -28,6 +28,7 @@ upstream docker-jellyfin {
 
 upstream docker-jenkins {
     server jenkins:8080;
+    server ${PrimaryDomain} backup;
 }
 
 upstream docker-code-server {

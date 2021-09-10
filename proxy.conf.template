@@ -75,6 +75,18 @@ server {
         error_page 404 /404.html;
     }
     
+    location /hello {
+        alias /home/data/media;
+        autoindex on;
+        auth_basic "Hello, but who are you?";
+        auth_basic_user_file /etc/nginx/user.htpasswd;
+        dav_methods PUT DELETE MKCOL COPY MOVE;
+        dav_ext_methods PROPFIND OPTIONS;
+        dav_access user:rw group:rw;
+        client_max_body_size 0;
+        create_full_put_path on;
+    }  
+
     location /transmission {
     	auth_basic "restricted";
         auth_basic_user_file /etc/nginx/user.htpasswd;

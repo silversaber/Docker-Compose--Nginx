@@ -151,7 +151,7 @@ server {
 	}
 
     location /share {
-        alias /var/webdav/file/share;
+        alias /home/data/share;
         autoindex on;
         dav_access all:r;
     }

@@ -63,7 +63,7 @@ server {
     ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
     
-    limit_req zone=one burst=5;
+    #limit_req zone=one burst=5;
     
     location /.well-known/acme-challenge/ {
     	alias /var/www/certbot/;
@@ -75,8 +75,8 @@ server {
     location / {
         index index.html;
         error_page 404 /404.html;
-	limit_req_status        429; 
-        limit_req_log_level     error; 
+	    #limit_req_status        429; 
+        #limit_req_log_level     error; 
     }
     
     location /hello {

@@ -343,7 +343,7 @@ server {
 
     location / {
         proxy_buffering off;
-    	proxy_pass http://host.docker.internal:8080;
+    	proxy_pass http://192.168.0.111:8080;
 	    #proxy_http_version 1.1;
         proxy_ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
         proxy_ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;

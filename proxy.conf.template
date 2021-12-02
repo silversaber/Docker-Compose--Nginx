@@ -331,22 +331,22 @@ server {
 }
 
 server {
-     server_name wbsnsWeb.${SubDomain2};
+     server_name wbsnsWeb.${SubDomain};
     charset utf-8;
 
     listen [::]:443 ssl;
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain2}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain2}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
 
     location / {
         proxy_buffering off;
     	proxy_pass http://192.168.0.111:10200;
 	    #proxy_http_version 1.1;
-        proxy_ssl_certificate /etc/letsencrypt/live/${SubDomain2}/fullchain.pem;
-        proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain2}/privkey.pem;
+        proxy_ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+        proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
     
         # proxy header
    	    #proxy_set_header Connection 'upgrade';
@@ -361,22 +361,22 @@ server {
 }
 
 server {
-     server_name wbsnsApi.${SubDomain2};
+     server_name wbsnsApi.${SubDomain};
     charset utf-8;
 
     listen [::]:443 ssl;
     listen 443 ssl;
     
     ssl on;
-    ssl_certificate /etc/letsencrypt/live/${SubDomain2}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${SubDomain2}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
 
     location / {
         proxy_buffering off;
     	proxy_pass http://192.168.0.111:10100;
 	    #proxy_http_version 1.1;
-        proxy_ssl_certificate /etc/letsencrypt/live/${SubDomain2}/fullchain.pem;
-        proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain2}/privkey.pem;
+        proxy_ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
+        proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;
     
         # proxy header
    	    #proxy_set_header Connection 'upgrade';

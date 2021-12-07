@@ -433,7 +433,7 @@ server {
 
     location / {
         proxy_buffering off;
-    	proxy_pass http://192.168.0.111:4000;
+    	proxy_pass http://192.168.0.111:8889;
 	    #proxy_http_version 1.1;
         proxy_ssl_certificate /etc/letsencrypt/live/${SubDomain}/fullchain.pem;
         proxy_ssl_certificate_key /etc/letsencrypt/live/${SubDomain}/privkey.pem;

@@ -6,6 +6,15 @@ export PrimaryDomain
 
 envsubst '${SubDomain} ${PrimaryDomain}' < /proxy.conf.template > /etc/nginx/sites-available/proxy.conf
 envsubst '${SubDomain} ${PrimaryDomain}' < /index.html.template > /usr/share/nginx/html/index.html
+envsubst '${SubDomain} ${PrimaryDomain}' < /cert.conf.template > /etc/nginx/sites-available/cert.conf
+
+Check="/etc/letsencrypt/live/$PrimaryDomain/fullchain.pem"
+# /etc/letsencrypt/live/like-a-junk.com/fullchain.pem
+if [ -e $Check ]; then
+	echo "checked!"
+else
+	rm -rf /etc/nginx/sites-available/proxy.conf
+fi
 
 if [[ -n "$USERNAME" ]] && [[ -n "$USERPWD" ]]
 then

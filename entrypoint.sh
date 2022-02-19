@@ -9,7 +9,6 @@ envsubst '${SubDomain} ${PrimaryDomain}' < /index.html.template > /usr/share/ngi
 envsubst '${SubDomain} ${PrimaryDomain}' < /cert.conf.template > /etc/nginx/sites-available/cert.conf
 
 Check="/etc/letsencrypt/live/$PrimaryDomain/fullchain.pem"
-# /etc/letsencrypt/live/like-a-junk.com/fullchain.pem
 if [ -e $Check ]; then
 	echo "checked!"
 else

@@ -23,6 +23,7 @@ RUN  mkdir -p /etc/nginx/conf.d
 RUN mkdir -p /etc/nginx/sites-available && mkdir -p /etc/nginx/sites-enabled
 
 COPY proxy.conf.template .
+COPY cert.conf.template .
 COPY /docs/html/index.html.template .
 
 COPY entrypoint.sh .

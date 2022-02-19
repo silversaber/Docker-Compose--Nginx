@@ -9,8 +9,4 @@ server {
         autoindex on;
         dav_access all:r;
     }
-
-    location / {
-        rewrite ^ https://$host$request_uri? permanent;
-    }
 }

@@ -10,9 +10,11 @@ envsubst '${SubDomain} ${PrimaryDomain}' < /cert.conf.template > /etc/nginx/site
 
 Check="/etc/letsencrypt/live/$PrimaryDomain/fullchain.pem"
 if [ -e $Check ]; then
-	echo "checked!"
+	rm -rf /etc/nginx/sites-available/cert.conf
+	echo cert.conf_removed.
 else
 	rm -rf /etc/nginx/sites-available/proxy.conf
+	echo proxy.conf_removed.
 fi
 
 if [[ -n "$USERNAME" ]] && [[ -n "$USERPWD" ]]

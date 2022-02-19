@@ -39,6 +39,24 @@ upstream docker-code-server {
 }
 
 server {
+    listen 80;
+ 
+    server_name ${PrimaryDomain} ${SubDomain};
+    
+    location ^~ /.well-known/acme-challenge/ {
+        alias /var/www/certbot/;
+	    default_type "text/plain";
+        autoindex on;
+        dav_access all:r;
+    }
+
+    location / {
+        rewrite ^ https://$host$request_uri? permanent;
+    }
+}
+
+
+server {
     charset utf-8;
     server_name ${PrimaryDomain} ${SubDomain};
 

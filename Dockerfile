@@ -30,9 +30,13 @@ COPY entrypoint.sh .
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-RUN if [ -e "/etc/nginx/sites-available/proxy.conf" ]; then ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf ;fi
+RUN ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf
 
-RUN if [ -e "/etc/nginx/sites-available/cert.conf" ]; then ln -s /etc/nginx/sites-available/cert.conf /etc/nginx/sites-enabled/cert.conf ;fi
+RUN ln -s /etc/nginx/sites-available/cert.conf /etc/nginx/sites-enabled/cert.conf
+
+# RUN if [ -e "/etc/nginx/sites-available/proxy.conf" ]; then ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf ;fi
+
+# RUN if [ -e "/etc/nginx/sites-available/cert.conf" ]; then ln -s /etc/nginx/sites-available/cert.conf /etc/nginx/sites-enabled/cert.conf ;fi
 
 WORKDIR /etc/nginx 
 CMD nginx -g "daemon off;"

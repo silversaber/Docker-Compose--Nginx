@@ -12,11 +12,11 @@ Check="/etc/letsencrypt/live/$PrimaryDomain/fullchain.pem"
 
 if [ -e $Check ]; then
 	rm -rf /etc/nginx/sites-available/cert.conf
-	ln -s /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf
+	ln -sf /etc/nginx/sites-available/proxy.conf /etc/nginx/sites-enabled/proxy.conf
 	echo cert.conf_removed.
 else
 	rm -rf /etc/nginx/sites-available/proxy.conf
-	ln -s /etc/nginx/sites-available/cert.conf /etc/nginx/sites-enabled/cert.conf
+	ln -sf /etc/nginx/sites-available/cert.conf /etc/nginx/sites-enabled/cert.conf
 	echo proxy.conf_removed.
 fi
 

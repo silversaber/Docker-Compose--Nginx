@@ -9,11 +9,4 @@ server {
         #autoindex on;
         #dav_access all:r;
     }
-
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot/;
-	    #default_type "text/plain";
-        #autoindex on;
-        #dav_access all:r;
-    }
 }

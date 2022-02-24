@@ -117,6 +117,12 @@
                 url: "https://jellyfin." + host,
                 img: "img/icon_jellyfin.png"
             },
+            {
+                name: "Novnc",
+                text: "Novnc",
+                url: "https://" + host + "/novnc",
+                img: "img/icon_novnc.svg"
+            },
         ];
 
         function linkClik(obj) {

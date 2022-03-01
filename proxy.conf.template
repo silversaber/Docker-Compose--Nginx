@@ -43,7 +43,7 @@ upstream docker-novnc {
 }
 
 upstream docker-photoprism {
-    server photoprisim:2342;
+    server photoprism:2342;
 }
 
 server {

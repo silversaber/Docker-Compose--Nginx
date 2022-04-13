@@ -24,23 +24,28 @@ upstream docker-nextcloud {
 
 upstream docker-jellyfin {
     server jellyfin:8096;
+    server 127.0.0.1:8096 backup;
 }
 
 upstream docker-jellyfin2 {
     server jellyfin2:8096;
+    server 127.0.0.1:8096 backup;
 }
 
 upstream docker-jenkins {
     server jenkins:8080;
+    server 127.0.0.1:8080 backup;
 }
 
 upstream docker-code-server {
     server code-server:8443;
+    server 127.0.0.1:8443 backup;
 }
 
 
 upstream docker-photoprism {
     server photoprism:2342;
+    server 127.0.0.1:2342 backup;
 }
 
 server {

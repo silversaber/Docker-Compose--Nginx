@@ -1,0 +1,12 @@
+server {
+    listen 80;
+ 
+    server_name ${PrimaryDomain} ${SubDomain} *.${PrimaryDomain} *.${SubDomain};
+    
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/certbot/;
+	    #default_type "text/plain";
+        #autoindex on;
+        #dav_access all:r;
+    }
+}

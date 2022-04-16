@@ -78,8 +78,7 @@
             {
                 name: "JDownloader2",
                 text: "Download 프로그램",
-                url: "http://" + host + ":5800",
-                //url: "https://" + host + "/jdownloader-2",
+                url: "https://" + host + "/jdownloader-2",
                 img: "img/icon_jdownloader.svg"
             },
             {
@@ -100,12 +99,12 @@
                 url: "https://" + host + "/netdata",
                 img: "img/icon_monitoring.svg"
             },
-            {
-                name: "Tomcat",
-                text: "톰캣",
-                url: "https://tomcat." + host + "/",
-                img: "img/icon_tomcat.svg"
-            },
+            //{
+            //    name: "Tomcat",
+            //    text: "톰캣",
+            //    url: "https://tomcat." + host + "/",
+            //    img: "img/icon_tomcat.svg"
+            //},
             {
                 name: "Next Cloud",
                 text: "nextcloud",
@@ -117,6 +116,12 @@
                 text: "Jellyfin",
                 url: "https://jellyfin." + host,
                 img: "img/icon_jellyfin.png"
+            },
+            {
+                name: "Novnc",
+                text: "Novnc",
+                url: "https://" + host + "/novnc",
+                img: "img/icon_novnc.svg"
             },
         ];
 

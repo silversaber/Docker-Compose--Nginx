@@ -7,13 +7,14 @@ upstream docker-transmission {
     server transmission:9091;
 }
 
-upstream docker-jdownloader-2 {
+upstream docker-jdownloader2 {
     server jdownloader2:5800;
 }
 
 upstream docker-netdata {
     server netdata:19999;
     keepalive 64;
+    server 127.0.0.1:19999 backup;
 }
 
 upstream docker-nextcloud {
@@ -23,325 +24,106 @@ upstream docker-nextcloud {
 
 upstream docker-jellyfin {
     server jellyfin:8096;
+    server 127.0.0.1:8096 backup;
 }
 
-#upstream docker-lychee {
-#    server lychee:80;
-#}
+upstream docker-jellyfin2 {
+    server jellyfin2:8096;
+    server 127.0.0.1:8096 backup;
+}
 
-#upstream docker-jenkins {
-#    server jenkins:1203;
-#}
+upstream docker-jenkins {
+    server jenkins:8080;
+    server 127.0.0.1:8080 backup;
+}
 
+upstream docker-code-server {
+    server code-server:8443;
+    server 127.0.0.1:8443 backup;
+}
+
+
+upstream docker-photoprism {
+    server photoprism:2342;
+    server 127.0.0.1:2342 backup;
+}
 
 server {
     listen 80;
  
-    server_name ${PrimaryDomain} ${SubDomain} home.${SubDomain};
+    server_name ${PrimaryDomain} ${SubDomain};
     
     location ^~ /.well-known/acme-challenge/ {
         alias /var/www/certbot/;
-	default_type "text/plain";
+	    default_type "text/plain";
         autoindex on;
         dav_access all:r;
-	break;
     }
 
     location / {
         rewrite ^ https://$host$request_uri? permanent;
-	break;
     }
 }
 
+
 server {
     charset utf-8;
-    server_name ${PrimaryDomain} ${SubDomain} home.${SubDomain};
+    server_name ${PrimaryDomain} ${SubDomain};
 
     root /usr/share/nginx/html;
     
-    listen 443 ssl;
+    listen [::]:443 ssl http2;
+    listen 443 ssl http2;
     
     ssl on;
     ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
+    
+    #limit_req zone=one burst=5;
     
     location /.well-known/acme-challenge/ {
     	alias /var/www/certbot/;
     	default_type "text/plain";
     	autoindex on;
         dav_access all:r;
-	break;
     }
     
     location / {
         index index.html;
         error_page 404 /404.html;
-	break;
-    }
-
-    location /img/ {
-        autoindex on;
-	break;
+	    #limit_req_status        429; 
+        #limit_req_log_level     error; 
     }
     
-    location /transmission {
-        proxy_pass         http://docker-transmission;
-        proxy_redirect     off;
-        proxy_set_header   Host $host;
-        proxy_set_header   X-Real-IP $remote_addr;
-        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header   X-Forwarded-Host $server_name;
-	    break;
-    }
-
-    location = /netdata {
-        return 301 /netdata/;
-	    break;
-    }
-
-    location ~ /netdata/(?<ndpath>.*) {
-        auth_basic "restricted";
+    location /hello {
+        alias /home/data/media;
+        autoindex on;
+        auth_basic "Hello, but who are you?";
         auth_basic_user_file /etc/nginx/user.htpasswd;
+        dav_methods PUT DELETE MKCOL COPY MOVE;
+        dav_ext_methods PROPFIND OPTIONS;
+        dav_access user:rw group:rw;
+        client_max_body_size 0;
+        create_full_put_path on;
+    }   
 
-	    proxy_redirect off;
-	    proxy_set_header Host $host;
-
-	    proxy_set_header X-Forwarded-Host $host;
-	    proxy_set_header X-Forwarded-Server $host;
-	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	    proxy_http_version 1.1;
-	    proxy_pass_request_headers on;
-	    proxy_set_header Connection "keep-alive";
-	    proxy_store off;
-	    proxy_pass http://docker-netdata/$ndpath$is_args$args;
-
-	    gzip on;
-	    gzip_proxied any;
-	    gzip_types *;
-	    break;
-    }
+    
+    
+  
+    
 
     location /code-server {
-        return 301 http://code.${SubDomain}/;
+        return 301 http://code.${PrimaryDomain}/;
     }
-    
-    location = /jdownloader-2 {
-        return 301 $scheme://$http_host/jdownloader-2/;
-        break;    
-    }
-	
-    location /jdownloader-2/ {
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-NginX-Proxy true;
-
-		proxy_pass http://docker-jdownloader-2/;
-        
-		location /jdownloader-2/websockify {
-			proxy_pass http://docker-jdownloader-2/websockify/;
-			proxy_http_version 1.1;
-			proxy_set_header Upgrade $http_upgrade;
-			proxy_set_header Connection $connection_upgrade;
-			proxy_read_timeout 86400;
-		}
-        break;
-	}
-
-    #location /lychee {
-    #    proxy_pass         http://docker-lychee;
-    #   proxy_redirect     off;
-    #    proxy_set_header   Host $host;
-    #    proxy_set_header   X-Real-IP $remote_addr;
-    #    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
-    #    proxy_set_header   X-Forwarded-Host $server_name;
-	#    break;
-    #}
-
-    location ^~ /jenkins/ {
-	    proxy_pass         http://${PrimaryDomain}:1203/jenkins/;
-	    proxy_redirect http:// https://;
-	    sendfile off;
-
-	    proxy_set_header   Host             $host;
-	    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-	    proxy_max_temp_file_size 0;
-
-	    client_max_body_size       10m;
-	    client_body_buffer_size    128k;
-
-	    proxy_connect_timeout      90;
-	    proxy_send_timeout         90;
-	    proxy_read_timeout         90;
-
-	    proxy_temp_file_write_size 64k;
-
-	    proxy_http_version 1.1;
-	    proxy_request_buffering off;
-	    proxy_buffering off;
-	    break;
-    }
-
+   
     location /share {
-        alias /var/webdav/file/share;
+        alias /home/data/share;
         autoindex on;
         dav_access all:r;
-	break;
-    }
-    
-    location /static {
-    	add_header 'Access-Control-Allow-Origin' '*';
-    	autoindex on;
-        dav_access all:r;
-	break;
     }
  }
 
-server {
-    server_name code.${SubDomain} code.${PrimaryDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    
-    location / {
-    	proxy_pass         http://${PrimaryDomain}:8080;
-	    proxy_http_version      1.1;
-    	proxy_set_header       Upgrade $http_upgrade;
-    	proxy_set_header       Connection "upgrade";
-	break;
-    }
-}
 
-server {
-    server_name tomcat.${PrimaryDomain} tomcat.${SubDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    
-    location / {
-    	proxy_pass         http://${PrimaryDomain}:1205;
-	
-	proxy_read_timeout 999999;
-   	proxy_connect_timeout 999999;
-   	proxy_send_timeout 999999;
-   	send_timeout 999999;
-   	proxy_redirect         off;
-	
-	proxy_http_version 1.1;
-	proxy_set_header Upgrade $http_upgrade;
-   	proxy_set_header Connection 'upgrade';
-   	proxy_set_header Host $host;
-   	proxy_cache_bypass $http_upgrade;
-	break;
-    }
-}
 
-server {
-    server_name jenkins.${PrimaryDomain} jenkins.${SubDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    
-    location / {
-    	proxy_pass         http://${PrimaryDomain}:1203;
-	proxy_http_version      1.1;
-    	proxy_set_header       Upgrade $http_upgrade;
-    	proxy_set_header       Connection "upgrade";
-	break;
-    }
-}
 
-server {
-    server_name jellyfin.${PrimaryDomain} jellyfin.${SubDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    resolver 127.0.0.1 valid=30;
-        
-    location / {
-        proxy_pass http://docker-jellyfin;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Protocol $scheme;
-        proxy_set_header X-Forwarded-Host $http_host;
 
-        # Disable buffering when the nginx proxy gets very resource heavy upon streaming
-        proxy_buffering off;
-    }
-    
-    location = /web/ {
-        # Proxy main Jellyfin traffic
-        proxy_pass http://docker-jellyfin/web/index.html;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Protocol $scheme;
-        proxy_set_header X-Forwarded-Host $http_host;
-    }
-
-    location /socket {
-        # Proxy Jellyfin Websockets traffic
-        proxy_pass http://docker-jellyfin;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Protocol $scheme;
-        proxy_set_header X-Forwarded-Host $http_host;
-    }
-}
-
-server {
-    server_name nextcloud.${SubDomain} nextcloud.${PrimaryDomain};
-    charset utf-8;
-    
-    listen 443 ssl;
-    
-    ssl on;
-    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    
-    add_header Strict-Transport-Security "max-age=15552000; includeSubdomains; preload";
-
-    location / {
-    	proxy_pass https://docker-nextcloud;
-        proxy_ssl_certificate     /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-    	proxy_ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-	
-	    proxy_read_timeout 40000;
-   	    proxy_connect_timeout 40000;
-   	    proxy_send_timeout 40000;
-   	    send_timeout 40000;
-
-        client_max_body_size 0;
-	    client_body_buffer_size    128k;
-    
-   	    proxy_set_header Connection 'upgrade';
-   	    proxy_set_header Host $host;
-   	    proxy_cache_bypass $http_upgrade;
-	    break;
-    }
-
-}

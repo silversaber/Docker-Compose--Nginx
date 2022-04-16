@@ -15,6 +15,41 @@ server {
         dav_access all:r;
     }
 
+    # location / {
+    #     index index.html;
+    #     error_page 404 /404.html;
+	#     #limit_req_status        429; 
+    #     #limit_req_log_level     error; 
+    # }
+    
+
+    location / {
+        rewrite ^ https://$host$request_uri? permanent;
+    }
+}
+
+server {
+    charset utf-8;
+    server_name ${PrimaryDomain} ${SubDomain};
+
+    root /usr/share/nginx/html;
+    
+    listen [::]:443 ssl http2;
+    listen 443 ssl http2;
+    
+    # ssl on;
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
+    
+    #limit_req zone=one burst=5;
+    
+    location /.well-known/acme-challenge/ {
+    	alias /var/www/certbot/;
+    	default_type "text/plain";
+    	autoindex on;
+        dav_access all:r;
+    }
+    
     location / {
         index index.html;
         error_page 404 /404.html;
@@ -22,56 +57,25 @@ server {
         #limit_req_log_level     error; 
     }
     
+    # location /hello {
+    #     alias /home/data/media;
+    #     autoindex on;
+    #     auth_basic "Hello, but who are you?";
+    #     auth_basic_user_file /etc/nginx/user.htpasswd;
+    #     dav_methods PUT DELETE MKCOL COPY MOVE;
+    #     dav_ext_methods PROPFIND OPTIONS;
+    #     dav_access user:rw group:rw;
+    #     client_max_body_size 0;
+    #     create_full_put_path on;
+    # }   
 
-    # location / {
-    #     rewrite ^ https://$host$request_uri? permanent;
-    # }
-}
+    location /share {
+        alias /home/data/share;
+        autoindex on;
+        dav_access all:r;
+    }
 
-# server {
-#     charset utf-8;
-#     server_name ${PrimaryDomain} ${SubDomain};
-
-#     root /usr/share/nginx/html;
-    
-#     listen [::]:443 ssl http2;
-#     listen 443 ssl http2;
-    
-#     ssl on;
-#     ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
-#     ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
-    
-#     #limit_req zone=one burst=5;
-    
-#     location /.well-known/acme-challenge/ {
-#     	alias /var/www/certbot/;
-#     	default_type "text/plain";
-#     	autoindex on;
-#         dav_access all:r;
-#     }
-    
-#     location / {
-#         index index.html;
-#         error_page 404 /404.html;
-# 	    #limit_req_status        429; 
-#         #limit_req_log_level     error; 
-#     }
-    
-#     location /hello {
-#         alias /home/data/media;
-#         autoindex on;
-#         auth_basic "Hello, but who are you?";
-#         auth_basic_user_file /etc/nginx/user.htpasswd;
-#         dav_methods PUT DELETE MKCOL COPY MOVE;
-#         dav_ext_methods PROPFIND OPTIONS;
-#         dav_access user:rw group:rw;
-#         client_max_body_size 0;
-#         create_full_put_path on;
-#     }   
-
-#     location /share {
-#         alias /home/data/share;
-#         autoindex on;
-#         dav_access all:r;
-#     }
-#  }
+    include /etc/nginx/sites-enabled/locations/*.conf;
+    include /etc/nginx/sites-enabled/upstreams/*.conf;
+    include /etc/nginx/sites-enabled/subcode/*.conf;
+ }

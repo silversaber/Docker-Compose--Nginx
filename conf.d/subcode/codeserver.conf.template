@@ -1,0 +1,17 @@
+
+server {
+    server_name code.${SubDomain} code.${PrimaryDomain};
+    charset utf-8;
+    
+    listen 443 ssl;
+    
+    ssl_certificate /etc/letsencrypt/live/${PrimaryDomain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PrimaryDomain}/privkey.pem;
+    
+    location / {
+    	proxy_pass         http://docker-code-server;
+	    proxy_http_version      1.1;
+    	proxy_set_header       Upgrade $http_upgrade;
+    	proxy_set_header       Connection "upgrade";
+    }
+}
